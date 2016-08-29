@@ -64,21 +64,6 @@ public class UserController {
 	public String journalistRegister(HttpServletRequest request,
 			HttpServletResponse response) {
 		String message = "";
-		/*MimeMessage mail = javaMailSender.createMimeMessage();
-	        try {
-	            MimeMessageHelper helper = new MimeMessageHelper(mail, true);
-	            helper.setTo(request.getParameter("email"));
-	            helper.setReplyTo("someone@localhost");
-	            helper.setFrom("igoryov@gmail.com");
-	            helper.setSubject("Registration confirmation");
-	            String confirmLink = "http://localhost:8080/user/registerConfirmation?email=" + request.getParameter("email") + 
-	            		"?ime=" + request.getParameter("ime") + "?lozinka=" + request.getParameter("lozinka");
-	            helper.setText("Please click on the following link to confirm your registration: " + confirmLink);
-	        } catch (MessagingException e) {
-	            e.printStackTrace();
-	        } finally {}
-	        javaMailSender.send(mail);*/
-		// creates a simple e-mail object
 		System.out.println("REGISTRACIJA U TOKU:");
 		String confirmLink = "http://localhost:8080/user/registerConfirmation?email=" + request.getParameter("email") + 
         		"?ime=" + request.getParameter("ime") + "?lozinka=" + request.getParameter("lozinka");

@@ -394,18 +394,6 @@ public class DocumentController {
 		if(documentToPublish != null)
 			IndexManager.getIndexer().updateDocument(documentToPublish, indexableFields);
 		return "redirect:" + HOME_URL + "/document/editorArticles";
-		
-		/*List<Document> resultDocuments = new ArrayList<Document>();
-		Query query = null;
-		try {
-			query = QueryBuilder.buildQuery(Type.regular, "id",
-					id);
-		} catch (IllegalArgumentException | ParseException e) {
-			e.printStackTrace();
-		}
-		resultDocuments = ResultRetriever.getResults(query);
-		model.addAttribute("publishedArticles", resultDocuments.get(0));*/
-		//return "articleUpdate";
 	}
 	
 	@PreAuthorize("hasAuthority('EDITOR')")
