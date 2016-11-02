@@ -1,0 +1,198 @@
+
+/*
+    Autor: Dragan Ivanovic
+*/
+
+routines ( // deklaracija rutina, odnosno procedura
+           prelude
+           mark_regions
+           R1
+           Step_1
+)
+
+externals ( stem ) // funkcije koje se mogu spolja pozvati, 'glavni program'
+
+integers ( p1 ) // deklaracija integer varijabli
+
+groupings ( v ca sa) // deklaracija grupa
+
+stringescapes {} //izbacivanje odredjenih karaktera iz stringova
+
+/* special characters (in MS-DOS Latin I) */
+
+stringdef cx   hex '10D' // definicija makroa koji se kasnije koristi u ostalim izrazima (cekic)
+stringdef cy   hex '107' // cevap
+stringdef zx   hex '17E' // zaba
+stringdef sx   hex '161' // suma
+stringdef dx   hex '111' // djak
+
+//dzak je d{zx}ak
+
+define v 'aeiou' // definicija grupe - samoglasnici - vowels
+define sa '{cx}{cy}{zx}{sx}{dx}' //definicija grupe -  suglasnici sa akcentima
+define ca 'bvgdzjklmnprstfhc' + sa // definicija grupe - svi suglasnici - consonants (osim lj, nj, dz jer su to dva slova)
+
+
+define prelude as ( //definicija rutine koja ijekavicu i jekavicu svodi na ekavicu
+
+    do repeat goto ( //ponavljaj dok god ne dodjes do kraja stringa, odnosno dokle god pronalazis 'ije' u stringu
+        ca ['ije'] ca <- 'e'  // ijekavica u ekavicu
+    )
+	
+	do repeat goto ( //ponavljaj dok god ne dodjes do kraja stringa, odnosno dokle god pronalazis 'je' u stringu
+        ca ['je'] ca <- 'e' // jekavica u ekavicu
+    )
+)
+
+define mark_regions as ( //definicija rutine koja postavlja p1 na odgovarajuce mesto
+
+    $p1 = limit // p1 uzima vrednost limit, a limit je pokazivac iza zadnjeg slova (brojna vrednost)
+    
+    gopast v  gopast non-v setmark p1 // probaj da u reci od pocetka preskocis jedan samoglasnik i nesto sto nije samoglasnik i tu postavi p1, ako nisi uspeo onda p1 ostaje na kraju reci
+    
+)
+
+backwardmode (
+
+	define R1 as $p1 <= cursor // definicija rutine R1 koja proverava da li ce nakon odredjene radnje ostati dovoljno slova u reci (onako kako je definisano u mark_regions)
+	
+    define Step_1 as ( //definicija glavne rutine koja radi steming, poziva se u backwards rezimu
+	[substring] //pronadji maskimalni podstring (koji je nabrojan u listi nakon among) krenuvsi od cursor pozicije, tj. od kraja 
+		R1      // ako je podstring koji ostaje dovoljne duzine, onda se moze uraditi stemming
+		among ( //lista podstringova i njihovih zamena
+		'lozi'	
+		'loga'			
+		'lozima' 	(<-'log')
+		'pesi'		
+		'pesima'	(<-'peh')
+		'vojci'		(<-'vojka')
+		'bojci'		(<-'bojka')
+		'jaci'		
+		'jacima'	(<-'jak')
+		'cajni'		(<-'cajan')
+		'erni'		(<-'eran')
+		'larni'		(<-'laran')
+		'esni'		(<-'esan')
+		'anjac'		(<-'anjca')
+		'ajca'		
+		'ajaca'		(<-'ajca')
+		'ljaca'		
+		'ljca'		(<-'ljac')
+		'ejca'	
+		'ejaca'		(<-'ejca')
+		'ojca'	
+		'ojaca'		(<-'ojac')
+		'ajaka'		(<-'ajka')
+		'ojaka'		(<-'ojka')
+		'{sx}aca'	
+		'{sx}ca'	(<-'{sx}ac')
+		'inzima'	
+		'inzi'		(<-'ing')
+		'tvenici'	(<-'tvenik')
+		'tetici'	
+		'teticima'	(<-'tetika')
+		'nstava'	(<-'nstvo')
+		'nicima'	(<-'nik')
+		'ticima'	(<-'tik')
+		'zicima'	(<-'zik')
+		'snici'		(<-'snik')
+		'kuse'		(<-'kusi')
+		'kusin'		(<-'kusan')
+		'kustava'	(<-'kustvo')
+		'du{sx}an'	(<-'du{sx}ni')
+		'antan'		(<-'antni')
+		'bilan'		(<-'bilni')
+		'tilan'		(<-'tilni')
+		'avilan'	(<-'avilni')
+		'silan'		(<-'silni')
+		'gilan'	(<-'gilni')
+		'rilan'	(<-'rilni')
+		'nilan'	(<-'nilni')
+		'alan'	(<-'alni')
+		'ozan'	(<-'ozni')
+		'rave'	(<-'ravi')
+		'stavan'	(<-'stavni')
+		'pravan'	(<-'pravni')
+		'tivan'		(<-'tivni')
+		'sivan'		(<-'sivni')
+		'atan'		(<-'atni')
+		'enat'		(<-'enta')
+		'tetan'		(<-'tetni')
+		'pletan'	(<-'pletni')
+		'{sx}ave'	(<-'{sx}avi')
+		'anat'	(<-'anta')
+		'acak'	
+		'acaka'	(<-'acka')
+		'u{sx}ak'	(<-'u{sx}ka')
+		'atak'	
+		'ataka'	
+		'atci'	
+		'atcima'	(<-'atka')
+		'etak'	
+		'etaka'		(<-'etka')
+		'itak'	
+		'itaka'	
+		'itci'		(<-'itka')
+		'otak'	
+		'otaka'		(<-'otka')
+		'utak'	
+		'utaka'	
+		'utci'	
+		'utcima'	(<-'utka')
+		'eskan'	 (<-'eskna')
+		'tican'	 (<-'ticni')
+		'ojska'	 (<-'ojsci')
+		'esama'	 (<-'esma')
+		'metar'
+		'metara'	(<-'metra')
+		'centar'	
+		'centara'	(<-'centra')
+		'istar'	
+		'istara'	(<-'istra')
+		'o{sx}cu'	(<-'o{sx}ti')
+		'daba'	(<-'dba')
+		'cima'	
+		'ci' (<-'cka')
+		'mac'	
+		'maca'	(<-'mca')
+		'naca'	
+		'nac'	(<-'nca')
+		'voljan'	(<-'voljni')
+		'anaka'	(<-'anki')
+		'vac'	
+		'vaca'	(<-'vca')
+		'saca'	
+		'sac'	(<-'sca')
+		'raca'	
+		'rac'	(<-'rca')
+		'aoca'	
+		'alaca'	
+		'alac'	(<-'alca')
+		'elaca'	
+		'elac'	(<-'elca')
+		'olaca'	
+		'olac'	
+		'olce'	(<-'olca')
+		'njac'	
+		'njaca'	(<-'njca')
+		'ekata'	
+		'ekat'	(<-'ekta')
+		'izam'	
+		'izama'	(<-'izma')
+		'jebe'	(<-'jebi')
+		'baci'	(<-'baci')
+		'a{sx}an'	(<-'a{sx}ni')
+		'skom'	(<-'sko')
+		'i{sx}tu'	(<-'i{sx}te')
+			        )
+	)
+	
+)
+
+define stem as ( //definicija eksternog programa 
+	do prelude //uklanjanje ijekavice i ekavice
+    do mark_regions //inicijalizacija minimalne duzine reci koja ostaje nakog steminga
+	backwards ( //unazad se radi, od kraja reci
+        do Step_1 //stemming
+	)
+)
